@@ -89,7 +89,7 @@ roleRef:
   name: noobaa.noobaa.io
 `
 
-const Sha256_deploy_crds_noobaa_io_backingstores_crd_yaml = "e69e698b5f7a8f99dc3439153bb39c231be79427430385579259d82c5da8cabe"
+const Sha256_deploy_crds_noobaa_io_backingstores_crd_yaml = "cb0587fb90b7ca886c92692862a5a08e91d9137346f8be2d09ed7509f4c13455"
 
 const File_deploy_crds_noobaa_io_backingstores_crd_yaml = `apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
@@ -212,6 +212,37 @@ spec:
                   description: TargetBucket is the name of the target S3 bucket
                   type: string
               required:
+              - secret
+              - targetBucket
+              type: object
+            ibmCos:
+              description: IBMCos specifies a backing store of type ibm-cos
+              properties:
+                endpoint:
+                  description: 'Endpoint is the IBM COS compatible endpoint: http(s)://host:port'
+                  type: string
+                secret:
+                  description: Secret refers to a secret that provides the credentials
+                    The secret should define IBM_COS_ACCESS_KEY_ID and IBM_COS_SECRET_ACCESS_KEY
+                  properties:
+                    name:
+                      description: Name is unique within a namespace to reference
+                        a secret resource.
+                      type: string
+                    namespace:
+                      description: Namespace defines the space within which the secret
+                        name must be unique.
+                      type: string
+                  type: object
+                signatureVersion:
+                  description: SignatureVersion specifies the client signature version
+                    to use when signing requests.
+                  type: string
+                targetBucket:
+                  description: TargetBucket is the name of the target IBM COS bucket
+                  type: string
+              required:
+              - endpoint
               - secret
               - targetBucket
               type: object
@@ -1716,7 +1747,7 @@ metadata:
 data: {}
 `
 
-const Sha256_deploy_internal_deployment_endpoint_yaml = "ff6d715cce677a81b36bab784aeaed016b44750b342b4fc8a48a8743eaac7d2f"
+const Sha256_deploy_internal_deployment_endpoint_yaml = "047a0e1625c3d166bde7792f818db7a412b4fac6d1ee37f75c9f5f4f2618cae9"
 
 const File_deploy_internal_deployment_endpoint_yaml = `apiVersion: apps/v1
 kind: Deployment
@@ -1777,6 +1808,8 @@ spec:
         - name: LOCAL_MD_SERVER
         - name: LOCAL_N2N_AGENT
         - name: JWT_SECRET
+        - name: NOOBAA_DISABLE_COMPRESSION 
+          value: "false"
         - name: NOOBAA_AUTH_TOKEN
           valueFrom:
             secretKeyRef:
@@ -2109,7 +2142,7 @@ spec:
 
 `
 
-const Sha256_deploy_internal_statefulset_core_yaml = "3bf734db9a1c6d2dde8a5afb3582389b7d005d75938bacbd4e169994dad66bda"
+const Sha256_deploy_internal_statefulset_core_yaml = "a30bceca14204013e94623f8ce7855febeafeff018a65cf0b019b698fd397184"
 
 const File_deploy_internal_statefulset_core_yaml = `apiVersion: apps/v1
 kind: StatefulSet
@@ -2178,6 +2211,8 @@ spec:
           value: "mongodb://noobaa-db-0.noobaa-db/nbcore"
         - name: CONTAINER_PLATFORM
           value: KUBERNETES
+        - name: NOOBAA_DISABLE_COMPRESSION 
+          value: "false"
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
